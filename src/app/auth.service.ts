@@ -6,17 +6,18 @@ import { Injectable } from '@angular/core';
 export class AuthService {
   private token: string | null = null;
   public username: string = ''; // Store the username globally
+  private inactivityTimer: any;
+  private readonly TIMEOUT_DURATION = 60000; // 1 minute in milliseconds
 
-  constructor() {}
+  constructor() {
+    this.startInactivityTimer(); // Start the inactivity timer on service initialization
+  }
 
   login(user: { username: string; password: string }): Promise<boolean> {
     return fetch('/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        //emilys, emilyspass
-        //ethanm, ethanmpass
-        //logant, logantpass
         username: user.username,
         password: user.password,
         expiresInMins: 30
@@ -25,12 +26,10 @@ export class AuthService {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Login Response:", data);
-
         if (data.accessToken) {
-          // console.log("AccessToken: " + data.accessToken);
           this.token = data.accessToken;
           localStorage.setItem('authToken', data.accessToken);
+          this.resetInactivityTimer(); // Reset inactivity timer on successful login
           return this.fetchUserDetails();
         }
         return false;
@@ -53,10 +52,8 @@ export class AuthService {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("User Details Response:", data);
-
         if (data.username) {
-          this.username = data.username; // Store username
+          this.username = data.username;
           return true;
         }
         return false;
@@ -78,5 +75,25 @@ export class AuthService {
   logout(): void {
     this.token = null;
     localStorage.removeItem('authToken');
+    clearTimeout(this.inactivityTimer); // Clear inactivity timer on logout
+    console.log("Logged out due to inactivity");
+  }
+
+  private startInactivityTimer() {
+    this.resetInactivityTimer();
+    window.addEventListener('mousemove', () => this.resetInactivityTimer());
+    window.addEventListener('keydown', () => this.resetInactivityTimer());
+    window.addEventListener('click', () => this.resetInactivityTimer());
+  }
+
+  private resetInactivityTimer() {
+    if (this.isAuthenticated()) { // Only reset if the user is authenticated
+      clearTimeout(this.inactivityTimer);
+      this.inactivityTimer = setTimeout(() => {
+        if (this.isAuthenticated()) {
+          this.logout();
+        }
+      }, this.TIMEOUT_DURATION);
+    }
   }
 }
