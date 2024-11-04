@@ -6,23 +6,17 @@ import { AuthService } from '../auth.service';
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   standalone: true,
-  styleUrls: ['./dashboard.component.scss'], // Corrected here
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
-  constructor(private router: Router, private authService: AuthService) {}
+  username: string = '';
 
-  logout() {
-    localStorage.removeItem('auth');
- 
-    this.router.navigate(['/login']);
+  constructor(private authService: AuthService, private router: Router) {
+    this.username = this.authService.getUsername();
   }
 
-  getUsername(): string {
-    const authData = localStorage.getItem('auth');
-    if (authData) {
-      const user = JSON.parse(authData);
-      return user.username;
-    }
-    return '';
+  logout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

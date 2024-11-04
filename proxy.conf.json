@@ -1,0 +1,11 @@
+{
+  "/auth": {
+    "target": "https://dummyjson.com",
+    "secure": true,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api": ""
+    }
+  }
+}
+
