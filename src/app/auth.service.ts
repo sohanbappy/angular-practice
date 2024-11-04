@@ -5,7 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class AuthService {
   private token: string | null = null;
-  public username: string = ''; // Store the username
+  public username: string = ''; // Store the username globally
 
   constructor() {}
 
@@ -14,8 +14,9 @@ export class AuthService {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-//         username: 'emilys',
-//         password: 'emilyspass',
+        //emilys, emilyspass
+        //ethanm, ethanmpass
+        //logant, logantpass
         username: user.username,
         password: user.password,
         expiresInMins: 30
@@ -24,16 +25,20 @@ export class AuthService {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.token) {
-          console.log("AccessToken: "+data.token);
+        console.log("Login Response:", data);
 
-          this.token = data.token;
-          localStorage.setItem('authToken', data.token); // Store token in localStorage
+        if (data.accessToken) {
+          // console.log("AccessToken: " + data.accessToken);
+          this.token = data.accessToken;
+          localStorage.setItem('authToken', data.accessToken);
           return this.fetchUserDetails();
         }
         return false;
       })
-      .catch(() => false);
+      .catch(error => {
+        console.error("Login Error:", error);
+        return false;
+      });
   }
 
   fetchUserDetails(): Promise<boolean> {
@@ -48,12 +53,16 @@ export class AuthService {
     })
       .then(response => response.json())
       .then(data => {
-        if (data.username) {
-          console.log("User Details: "+data)
+        console.log("User Details Response:", data);
 
+        if (data.username) {
           this.username = data.username; // Store username
           return true;
         }
+        return false;
+      })
+      .catch(error => {
+        console.error("User Details Error:", error);
         return false;
       });
   }
