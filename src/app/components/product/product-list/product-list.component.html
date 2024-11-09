@@ -1,3 +1,6 @@
+<button (click)="addProduct()" class="products-link">Add New Product</button>
+<br>
+<br>
 <div class="product-grid">
     <div *ngFor="let product of products" class="product-card">
       <h3>{{ product.title }}</h3>

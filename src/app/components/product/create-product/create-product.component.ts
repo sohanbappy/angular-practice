@@ -44,6 +44,8 @@ export class CreateProductComponent {
     if (this.productForm.valid) {
       this.productService.createProduct(this.productForm.value).subscribe({
         next: () => {
+          alert('Product added successfully!');
+          console.log('Product added successfully, redirecting to list.');
           this.router.navigate(['/products']);
           this.productForm.reset();  // Reset form after successful submission
         },

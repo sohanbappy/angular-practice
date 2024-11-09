@@ -7,7 +7,7 @@ export class AuthService {
   private token: string | null = null;
   public username: string = ''; // Store the username globally
   private inactivityTimer: any;
-  private readonly TIMEOUT_DURATION = 60000; // 1 minute in milliseconds
+  private readonly TIMEOUT_DURATION = 60000 * 10; // 10 minute in milliseconds
 
   constructor() {
     this.startInactivityTimer(); // Start the inactivity timer on service initialization
