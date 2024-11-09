@@ -19,4 +19,9 @@ export class DashboardComponent {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
+  products() {
+    this.router.navigate(['/products']);
+  }
+
 }
