@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,14 @@ export class ProductService {
 
   constructor(private http: HttpClient) {}
 
-  getProducts() {
-    return this.http.get(`${this.apiUrl}`);
+  // Fetch products with search query
+  searchProducts(query: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/search?q=${query}`);
+  }
+
+  // Fetch products with pagination and selection of fields
+  getProducts(limit: number = 10, skip: number = 0): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}?limit=${limit}&skip=${skip}&select=title,price`);
   }
 
   getProduct(id: number) {

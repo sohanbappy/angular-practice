@@ -1,13 +1,31 @@
+<!-- Add Product Button -->
 <button (click)="addProduct()" class="products-link">Add New Product</button>
-<br>
-<br>
+
+<!-- Search and Sort -->
+<div class="search-sort-container">
+  <input
+    type="text"
+    [(ngModel)]="searchQuery"
+    placeholder="Search products..."
+    (input)="onSearch()"
+  />
+  <select [(ngModel)]="sortDirection" (change)="onSort()">
+    <option value="asc">Sort by Price: Low to High</option>
+    <option value="desc">Sort by Price: High to Low</option>
+  </select>
+</div>
+
+<!-- Product Grid -->
 <div class="product-grid">
-    <div *ngFor="let product of products" class="product-card">
-      <h3>{{ product.title }}</h3>
-      <p>{{ product.description }}</p>
-      <p>Price: ${{ product.price }}</p>
-      <button (click)="editProduct(product.id)">Edit</button>
-      <button (click)="deleteProduct(product.id)">Delete</button>
+  <div *ngFor="let product of products" class="product-card">
+    <h3>{{ product.title }}</h3>
+    <p>{{ product.description }}</p>
+    <p>Price: ${{ product.price }}</p>
+    
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button (click)="editProduct(product.id)" class="edit-button">Edit</button>
+      <button (click)="deleteProduct(product.id)" class="delete-button">Delete</button>
     </div>
   </div>
-  
+</div>
